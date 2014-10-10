@@ -7,7 +7,7 @@
     "main": "./build/dist/dynamic-forms.js",
     "repository": {
         "type": "git",
-        "url":  "git://github.com/wbreza/angular-dynamic-forms.git"
+        "url":  " "
     },
     "moduleType": [
         "es6"
