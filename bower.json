@@ -1,26 +1,30 @@
 {
-  "name": "dynamic-forms",
-  "version": "0.1.0",
-  "authors": [
-    "Wallace Breza <wallace@breza.me>"
-  ],
-  "moduleType": [
-    "es6"
-  ],
-  "license": "MIT",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "angular": "1.3.0-beta.11",
-    "angular-route": "1.3.0-beta.11",
-    "angular-resource": "1.3.0-beta.11",
-    "angular-mocks": "1.3.0-beta.11",
-    "jquery": "~2.1.1"
-  }
+    "name": "dynamic-forms",
+    "version": "0.1.0",
+    "authors": [
+        "Wallace Breza <wallace@breza.me>"
+    ],
+    "main": "./build/dist/dynamic-forms.js",
+    "repository": {
+        "type": "git",
+        "url":  "git://github.com/wbreza/angular-dynamic-forms.git"
+    },
+    "moduleType": [
+        "es6"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "angular": "1.3.0-beta.11",
+        "angular-route": "1.3.0-beta.11",
+        "angular-resource": "1.3.0-beta.11",
+        "angular-mocks": "1.3.0-beta.11",
+        "jquery": "~2.1.1"
+    }
 }
