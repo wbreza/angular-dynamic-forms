@@ -2,7 +2,6 @@
     scripts: ['./src/*.js', './src/**/*.js'],
     specs: './test/**/*.spec.js',
     jadeTemplates: './src/**/*.jade',
-    buildOutput: ['./build/*.js', './build/**/*.js'],
     vendorScripts: [
         './bower_components/angular/angular.js',
         './bower_components/angular-resource/angular-resource.js',
@@ -14,7 +13,7 @@
 
 paths.karmaFiles = paths.vendorScripts
     .concat(paths.scripts)
-    .concat(paths.buildOutput)
+    .concat('./build/templates.js')
     .concat(paths.specs);
 
 paths.buildFiles = paths.scripts.concat('./build/templates.js');

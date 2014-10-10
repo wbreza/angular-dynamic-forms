@@ -169,7 +169,7 @@ ClientBin/
 *.publishsettings
 node_modules/
 bower_components/
-code-coverage/
+coverage/
 
 # RIA/Silverlight projects
 Generated_Code/

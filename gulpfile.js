@@ -6,6 +6,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
+    rimraf = require('rimraf'),
     paths = require('./paths.js');
 
 gulp.task('karma', ['templates'], function () {
@@ -51,7 +52,7 @@ gulp.task('uglify', ['combine-scripts'], function () {
         .pipe(rename('dynamic-forms.min.js'))
         .pipe(gulp.dest('./build/dist'))
         .on('error', notify.onError({
-            title: 'Error Building',
+            title: 'Error Uglifying',
             message: '<%= error.message %>'
         }));
 });
@@ -66,10 +67,14 @@ gulp.task('jade', function () {
 		}));
 });
 
-gulp.task('watch', ['default'], function () {
-    gulp.watch(paths.scripts, ['scripts', 'karma']);
-    gulp.watch(paths.jade, ['jade', 'cache-templates']);
+gulp.task('clean', function (cb) {
+    rimraf('./build', cb);
 });
 
-gulp.task('build', ['templates', 'combine-scripts', 'uglify']);
+gulp.task('watch', ['default'], function () {
+    gulp.watch(paths.scripts, ['karma']);
+    gulp.watch(paths.jade, ['templates']);
+});
+
+gulp.task('build', ['clean', 'templates', 'combine-scripts', 'uglify']);
 gulp.task('default', ['karma']);

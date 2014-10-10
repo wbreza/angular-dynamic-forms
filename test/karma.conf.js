@@ -17,15 +17,15 @@ module.exports = function (config) {
             'karma-phantomjs-launcher',
 	        'karma-coverage'
         ],
-        preprocessors: paths.codeCoverage,
-	    coverageReporter: {
+        preprocessors: { './src/**/*.js': ['coverage'] },
+        coverageReporter: {
             reporters: [
-                { type: 'html', dir: 'code-coverage/' },
+                { type: 'html' },
                 { type: 'text-summary' }
             ]
-	    },
+        },
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-	    logLevel: config.LOG_INFO,
+        logLevel: config.LOG_INFO,
     });
 };
