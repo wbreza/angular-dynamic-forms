@@ -47,5 +47,4 @@ gulp.task('watch', ['default'], function () {
     gulp.watch(paths.jade, ['jade', 'cache-templates']);
 });
 
-gulp.task('default', ['cache-templates', 'karma']);
-gulp.task('cache-templates', ['jade', 'templates']);
+gulp.task('default', ['karma']);
