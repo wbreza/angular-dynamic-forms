@@ -4,7 +4,7 @@
     "authors": [
         "Wallace Breza <wallace@breza.me>"
     ],
-    "main": "./build/dist/dynamic-forms.js",
+    "main": "./dist/dynamic-forms.js",
     "repository": {
         "type": "git",
         "url":  "git://github.com/wbreza/angular-dynamic-forms.git"
