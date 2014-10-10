@@ -1,55 +1,51 @@
 var gulp = require('gulp'),
-    notifier = require('gulp-notify'),
+    notify = require('gulp-notify'),
     karma = require('gulp-karma'),
-    jade = require('gulp-jade');
+    templateCache = require('gulp-angular-templatecache'),
+    jade = require('gulp-jade'),
+    paths = require('./paths.js');
 
-var notify = function (obj) {
-    var stream = through.obj(function (file, enc, callback) {
-        if (config.notify) {
-            file.pipe(notifier(obj));
-        }
-        this.push(file);
-        return callback();
-    });
-    return stream;
-};
-
-gulp.task('karma', ['cache-templates'], function () {
-    gulp.src('foobar')
-        .pipe(notify({ message: 'Running jasmine tests' }));
-    return gulp.src('foobar')
-        .pipe(karma({
-            configFile: 'test/karma.conf.js',
-            action: process.env.DEBUG ? 'start' : 'run',
-            dieOnError: false
-        }));
+gulp.task('karma', ['templates'], function () {
+    return gulp.src(paths.karmaFiles)
+		.pipe(karma({
+		    configFile: 'test/karma.conf.js',
+		    action: process.env.DEBUG ? 'start' : 'run',
+		    dieOnError: false
+		}))
+		.on('error', notify.onError({
+		    title: 'Error Running Karma Unit Tests',
+		    message: '<%= error.message %>'
+		}));
 });
 
 gulp.task('templates', function () {
-    return gulp.src(paths.templates)
+    return gulp.src(paths.jadeTemplates)
+		.pipe(jade({ pretty: true }))
         .pipe(templateCache('templates.js', {
             module: 'dynamic-forms',
-            root: '/app/'
+            root: '/app/dynamic-forms'
         }))
-        .pipe(gulp.dest('./build'))
-        .on('error', notify.onError({
-            title: 'Error Running Angular Templates',
-            message: '<%= error.message %>'
-        }));
+		.pipe(gulp.dest('./build'))
+		.on('error', notify.onError({
+		    title: 'Error Running Angular Templates',
+		    message: '<%= error.message %>'
+		}));
 });
 
 gulp.task('jade', function () {
-    gulp.src('foobar')
-        .pipe(notify({ message: 'Converting Jade to HTML' }));
     return gulp.src(paths.jade)
-        .pipe(jade({ pretty: true }))
-        .pipe(gulp.dest('./build/templates'));
+		.pipe(jade({ pretty: true }))
+		.pipe(gulp.dest('./build/templates'))
+		.on('error', notify.onError({
+		    title: 'Error Running Karma Unit Tests',
+		    message: '<%= error.message %>'
+		}));;
 });
 
-gulp.task('watch', ['default'], 
-	gulp.watch(paths.scripts, ['scripts', 'karma']);
-	gulp.watch(paths.spec, ['spec-lint', 'karma']);
-	gulp.watch(paths.jade, ['jade', 'cache-templates']);
-);
+gulp.task('watch', ['default'], function () {
+    gulp.watch(paths.scripts, ['scripts', 'karma']);
+    gulp.watch(paths.jade, ['jade', 'cache-templates']);
+});
 
-gulp.task('default', ['lint', 'karma', 'jade']);
+gulp.task('default', ['cache-templates', 'karma']);
+gulp.task('cache-templates', ['jade', 'templates']);

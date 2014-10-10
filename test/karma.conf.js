@@ -1,10 +1,10 @@
-var paths = require('../gulp/paths.js');
+var paths = require('../paths.js');
 
 module.exports = function (config) {
     config.set({
         basePath: '../',
-        files: './**/*.spec.js',
-        exclude: '',
+        files: paths.karmaFiles,
+        exclude: [],
         reporters: process.env.DEBUG ? ['spec'] : ['spec', 'coverage'],
         autoWatch: true,
         frameworks: ['jasmine'],
