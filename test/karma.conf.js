@@ -1,0 +1,31 @@
+var paths = require('../gulp/paths.js');
+
+module.exports = function (config) {
+    config.set({
+        basePath: '../',
+        files: './**/*.spec.js',
+        exclude: '',
+        reporters: process.env.DEBUG ? ['spec'] : ['spec', 'coverage'],
+        autoWatch: true,
+        frameworks: ['jasmine'],
+        browsers: [process.env.DEBUG ? 'Chrome' : 'PhantomJS'],
+        plugins: [
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-jasmine',
+            'karma-spec-reporter',
+            'karma-phantomjs-launcher',
+	        'karma-coverage'
+        ],
+        preprocessors: paths.codeCoverage,
+	    coverageReporter: {
+            reporters: [
+                { type: 'html', dir: 'code-coverage/' },
+                { type: 'text-summary' }
+            ]
+	    },
+        // level of logging
+        // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+	    logLevel: config.LOG_INFO,
+    });
+};
