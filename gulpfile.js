@@ -3,6 +3,9 @@ var gulp = require('gulp'),
     karma = require('gulp-karma'),
     templateCache = require('gulp-angular-templatecache'),
     jade = require('gulp-jade'),
+    rename = require('gulp-rename'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
     paths = require('./paths.js');
 
 gulp.task('karma', ['templates'], function () {
@@ -32,6 +35,27 @@ gulp.task('templates', function () {
 		}));
 });
 
+gulp.task('combine-scripts', ['templates'], function () {
+    return gulp.src(paths.buildFiles)
+        .pipe(concat('dynamic-forms.js'))
+        .pipe(gulp.dest('./build/dist'))
+		.on('error', notify.onError({
+		    title: 'Error Combining Scripts',
+		    message: '<%= error.message %>'
+		}));
+});
+
+gulp.task('uglify', ['combine-scripts'], function () {
+    return gulp.src('./build/dist/dynamic-forms.js')
+        .pipe(uglify())
+        .pipe(rename('dynamic-forms.min.js'))
+        .pipe(gulp.dest('./build/dist'))
+        .on('error', notify.onError({
+            title: 'Error Building',
+            message: '<%= error.message %>'
+        }));
+});
+
 gulp.task('jade', function () {
     return gulp.src(paths.jade)
 		.pipe(jade({ pretty: true }))
@@ -39,7 +63,7 @@ gulp.task('jade', function () {
 		.on('error', notify.onError({
 		    title: 'Error Running Karma Unit Tests',
 		    message: '<%= error.message %>'
-		}));;
+		}));
 });
 
 gulp.task('watch', ['default'], function () {
@@ -47,4 +71,5 @@ gulp.task('watch', ['default'], function () {
     gulp.watch(paths.jade, ['jade', 'cache-templates']);
 });
 
+gulp.task('build', ['templates', 'combine-scripts', 'uglify']);
 gulp.task('default', ['karma']);

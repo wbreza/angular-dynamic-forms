@@ -17,6 +17,8 @@ paths.karmaFiles = paths.vendorScripts
     .concat(paths.buildOutput)
     .concat(paths.specs);
 
+paths.buildFiles = paths.scripts.concat('./build/templates.js');
+
 paths.codeCoverage = {};
 paths.codeCoverage[paths.scripts] = ['coverage'];
 
