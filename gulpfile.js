@@ -39,7 +39,7 @@ gulp.task('templates', function () {
 gulp.task('combine-scripts', ['templates'], function () {
     return gulp.src(paths.buildFiles)
         .pipe(concat('dynamic-forms.js'))
-        .pipe(gulp.dest('./build/dist'))
+        .pipe(gulp.dest('./dist'))
 		.on('error', notify.onError({
 		    title: 'Error Combining Scripts',
 		    message: '<%= error.message %>'
@@ -47,10 +47,10 @@ gulp.task('combine-scripts', ['templates'], function () {
 });
 
 gulp.task('uglify', ['combine-scripts'], function () {
-    return gulp.src('./build/dist/dynamic-forms.js')
+    return gulp.src('./dist/dynamic-forms.js')
         .pipe(uglify())
         .pipe(rename('dynamic-forms.min.js'))
-        .pipe(gulp.dest('./build/dist'))
+        .pipe(gulp.dest('./dist'))
         .on('error', notify.onError({
             title: 'Error Uglifying',
             message: '<%= error.message %>'
