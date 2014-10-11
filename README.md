@@ -3,6 +3,8 @@
 #angular-dynamic-forms
 Automatically build angular forms with JSON schema
 
+Demos / examples are coming soon.
+
 ## Dependencies
 - Angular JS >= v1.2
 
@@ -28,3 +30,6 @@ Automatically build angular forms with JSON schema
     
     // Runs default gulp task (Builds and runs unit tests)
     gulp 
+
+## Usage
+    angular.module('app', ['dynamic-forms']);
