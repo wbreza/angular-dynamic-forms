@@ -1,0 +1,22 @@
+{
+  "name": "dynamic-forms-web",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbreza/angular-dynamic-forms.git"
+  },
+  "keywords": [
+    "gh-pages"
+  ],
+  "author": "Wallace Breza",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wbreza/angular-dynamic-forms/issues"
+  },
+  "homepage": "https://github.com/wbreza/angular-dynamic-forms"
+}

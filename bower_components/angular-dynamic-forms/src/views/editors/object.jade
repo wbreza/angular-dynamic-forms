@@ -1,0 +1,2 @@
+﻿div(data-ng-repeat="property in editor.getProperties() | orderBy:'index' track by property.name")
+    dynamic-editor(ng-model="model[property.name]" data-schema="property")
