@@ -14,11 +14,11 @@ var paths = {
     appScripts: ['./app/*.js', './app/**/*.js'],
     htmlTemplates: ['./app/**/*.html'],
     vendorScripts: [
-        './scripts/vendor/angular/angular.js',
-        './scripts/vendor/angular-resource/angular-resource.js',
-        './scripts/vendor/angular-route/angular-route.js',
-        './scripts/vendor/bootstrap/dist/jquery.js',
-        './scripts/vendor/jquery/dist/js/bootstrap.js'
+        './vendor/angular/angular.js',
+        './vendor/angular-resource/angular-resource.js',
+        './vendor/angular-route/angular-route.js',
+        './vendor/bootstrap/dist/jquery.js',
+        './vendor/jquery/dist/js/bootstrap.js'
     ]
 };
 
