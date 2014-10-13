@@ -1,10 +1,10 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('app')
-        .controller('homeController', ['$scope', HomeController]);
+    angular.module('demo')
+        .controller('demoController', demoController);
 
-    function HomeController($scope) {
+    function demoController() {
         var vm = this;
 
         vm.formSchema = {

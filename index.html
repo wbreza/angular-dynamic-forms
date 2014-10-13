@@ -5,8 +5,9 @@
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="content/bootstrap-flatly.css" rel="stylesheet" />
     <link href="bower_components/fontawesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="content/site.css" rel="stylesheet" />
 </head>
-<body ng-app>
+<body ng-app="app">
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -26,13 +27,16 @@
             </div>
         </div>
     </header>
-    <div ng-view></div>
+    <div class="container" ng-view></div>
+    <!-- Vendor Scripts -->
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="app/app.js"></script>
-    <script src="app/controllers/homeController.js"></script>
+    <script src="bower_components/angular-dynamic-forms/dist/dynamic-forms.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <!-- App Scripts-->
+    <script src="app/app.js"></script>
+    <script src="app/controllers/homeController.js"></script>
 </body>
 </html>

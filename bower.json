@@ -1,21 +1,22 @@
 {
-  "name": "dynamic-forms-web",
-  "version": "0.0.0",
-  "homepage": "http://www.breza.me/angular-dynamic-forms/",
-  "authors": [
-    "Wallace Breza <wallace@breza.me>"
-  ],
-  "main": "index.html",
-  "license": "MIT",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "fontawesome": "~4.2.0"
-  }
+    "name": "dynamic-forms-web",
+    "version": "0.0.0",
+    "homepage": "http://www.breza.me/angular-dynamic-forms/",
+    "authors": [
+        "Wallace Breza <wallace@breza.me>"
+    ],
+    "main": "index.html",
+    "license": "MIT",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "fontawesome": "~4.2.0",
+        "angular-dynamic-forms": "~0.1.3"
+    }
 }

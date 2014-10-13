@@ -1,3 +1,57 @@
-﻿<div class="home-header">
-    Home
-</div>
+﻿<h1>Getting Started</h1>
+Dynamic forms is an Angular JS module that allows you to dynamic generate a HTML form based off of standard <a href="http://json-schema.org" target="_blankd">JSON schema</a> complete with support for the following:
+<ul>
+    <li>Form Validation</li>
+    <li>Extensible and customizable template driven design</li>
+    <li>Default templates leverage bootstrap, but can be fully customized</li>
+</ul>
+<h2>Installation</h2>
+<h4>Install with bower</h4>
+<code>
+    $ bower install angular-dynamic-forms
+</code>
+<h4>Add script reference to your app</h4>
+<code>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;bower_components/dist/dynamic-forms.js&quot;&gt;&lt;/script&gt;
+</code>
+<h4>Add Angular Reference</h4>
+<code>
+    angular.module('myApp', ['dynamic-forms']);
+</code>
+<h4>
+    Add dynamic-form directive to your view
+</h4>
+<code>
+    &lt;dynamic-form schema=&quot;formSchema&quot; ng-model=&quot;formModel&quot;&gt;&lt;/dynamic-form&gt;
+</code>
+<h3>Basic Example</h3>
+<h5>JavaScript</h5>
+<pre>
+vm.formSchema = {
+    type: 'object',
+    title: 'Basic Example',
+    description: 'Example description for angular dynamic form',
+    properties: {
+        firstName: { type: 'string', title: 'First Name', description: 'Your first name', required: true },
+        lastName: { type: 'string', title: 'Last Name', description: 'Your last name', required: true },
+        email: { type: 'string', format: 'email', title: 'E-mail', description: 'Your email address', required: true }
+    }
+};
+vm.formModel = {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@gmail.com'
+};
+</pre>
+<h5>HTML</h5>
+<pre>
+&lt;dynamic-form schema=&quot;home.formSchema&quot; ng-model=&quot;home.formModel&quot;&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn btn-success&quot;&gt;Submit&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn btn-danger&quot;&gt;Cancel&lt;/button&gt;
+&lt;/dynamic-form&gt;
+</pre>
+<h5>Generated Example</h5>
+<dynamic-form schema="home.formSchema" ng-model="home.formModel">
+    <button type="button" class="btn btn-success">Submit</button>
+    <button type="button" class="btn btn-danger">Cancel</button>
+</dynamic-form>
