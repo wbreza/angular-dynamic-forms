@@ -1,5 +1,0 @@
-﻿div(class="panel panel-default", ng-class="{'panel-danger':editor.hasError(), 'panel-success':editor.isValid()}" ng-form)
-    div(class="panel-heading") {{schema.title}}
-    div(class="panel-body")
-        p {{schema.description}}
-        dynamic-editor(data-schema="schema" ng-model="model")
