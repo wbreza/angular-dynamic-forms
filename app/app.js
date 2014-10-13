@@ -17,7 +17,7 @@
                 controllerAs: 'home'
             })
             .otherwise({
-                redirectTo: '/'
+                redirectTo: '/angular-dynamic-forms'
             });
     }
 }());
