@@ -58,7 +58,7 @@ gulp.task('uglify', ['combine-scripts'], function () {
 });
 
 gulp.task('jade', function () {
-    return gulp.src(paths.jade)
+    return gulp.src(paths.jadeTemplates)
     .pipe(jade({ pretty: true }))
     .pipe(gulp.dest('./build/templates'))
     .on('error', notify.onError({
@@ -73,7 +73,7 @@ gulp.task('clean', function (cb) {
 
 gulp.task('watch', ['default'], function () {
     gulp.watch(paths.scripts, ['karma']);
-    gulp.watch(paths.jade, ['templates']);
+    gulp.watch(paths.jadeTemplates, ['templates']);
 });
 
 gulp.task('build', ['clean', 'templates', 'combine-scripts', 'uglify']);

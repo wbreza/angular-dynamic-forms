@@ -1,7 +1,7 @@
 .form-group.has-feedback(ng-class="{'has-error': field.hasError(), 'has-success': field.hasSuccess()}")
     label.control-label {{schema.title}} 
-    span.required(ng-show="schema.required") *
-    span.information.float-right(ng-show="schema.description" title="{{schema.description}}") i
+    span.required(ng-show="schema.required") * 
+    span.glyphicon.glyphicon-info-sign(ng-show="schema.description" title="{{schema.description}}")
     dynamic-input(data-schema="schema", ng-model="model")
     span.glyphicon.form-control-feedback(ng-class="{'glyphicon-ok': field.showSuccess(), 'glyphicon-remove': field.showError()}")
     p.text-danger(data-ng-show="field.hasError()") {{formField.$error.message}}
