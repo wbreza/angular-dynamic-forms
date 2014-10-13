@@ -1,0 +1,8 @@
+.form-group
+    label.control-label.col-sm-2 {{schema.title}}
+    span.required(ng-show="schema.required") *
+    span.glyphicon.glyphicon-info-sign(ng-show="schema.description" title="{{schema.description}}")
+    .col-sm-10
+        dynamic-input(data-schema="schema", ng-model="model")
+        span.glyphicon.form-control-feedback(ng-class="{'glyphicon-ok': field.showSuccess(), 'glyphicon-remove': field.showError()}")
+        p.text-danger(ng-show="field.hasError()") {{formField.$error.message}}

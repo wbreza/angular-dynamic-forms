@@ -28,7 +28,7 @@ var paths = {
 
 gulp.task('bower', function () {
     return bower()
-        .pipe(gulp.dest('./scripts/vendor'));
+        .pipe(gulp.dest('./vendor'));
 });
 
 gulp.task('templates', function () {
