@@ -7,17 +7,17 @@
     function AppConfig($routeProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: '/app/views/home.html',
+                templateUrl: 'app/views/home.html',
                 controller: 'homeController',
                 controllerAs: 'home'
             })
             .when('/angular-dynamic-forms', {
-                templateUrl: '/angular-dynamic-forms/app/views/home.html',
+                templateUrl: 'app/views/home.html',
                 controller: 'homeController',
                 controllerAs: 'home'
             })
             .otherwise({
-                redirectTo: '/angular-dynamic-forms'
+                redirectTo: '/'
             });
     }
 }());
