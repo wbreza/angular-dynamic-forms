@@ -1,6 +1,14 @@
 ﻿body {
   margin-top: 70px;
 }
+footer {
+  background-color: #f7f5fa;
+  border-top: 1px solid #eee;
+  color: #999;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 50px;
+}
 .home-header {
   background-color: #2c3e50;
 }

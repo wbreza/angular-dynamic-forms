@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "dynamic-forms-web", "http://localhost:52111", "{2B12A8EB-4A30-4442-9D88-2976D4E641C8}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_52111"
+		Debug.AspNetCompiler.PhysicalPath = "D:\Workspaces\dynamic-forms-web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_52111\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_52111"
+		Release.AspNetCompiler.PhysicalPath = "D:\Workspaces\dynamic-forms-web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_52111\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "D:\Workspaces\dynamic-forms-web\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B12A8EB-4A30-4442-9D88-2976D4E641C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B12A8EB-4A30-4442-9D88-2976D4E641C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

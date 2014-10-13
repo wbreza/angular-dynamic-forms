@@ -18,5 +18,15 @@
   "bugs": {
     "url": "https://github.com/wbreza/angular-dynamic-forms/issues"
   },
-  "homepage": "https://github.com/wbreza/angular-dynamic-forms"
+  "homepage": "https://github.com/wbreza/angular-dynamic-forms",
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "gulp-angular-templatecache": "^1.4.2",
+    "gulp-bower": "0.0.6",
+    "gulp-concat": "^2.4.1",
+    "gulp-notify": "^2.0.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.1",
+    "rimraf": "^2.2.8"
+  }
 }
