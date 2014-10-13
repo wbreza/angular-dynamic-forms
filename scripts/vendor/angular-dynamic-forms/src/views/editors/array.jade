@@ -1,8 +1,0 @@
-﻿dynamic-list(data-schema="schema", ng-model="model")
-    p.text-danger(data-ng-show="formField.$error.message") {{formField.$error.message}}
-    button.btn.btn-default.btn-xs(ng-click="dynamicList.addItem()", ng-disabled="!dynamicList.canAddItem()", type="button") Add Item
-    ul.list-group
-        li.list-group-item(ng-repeat="item in model")
-            button.btn.btn-default.btn-xs(ng-click="dynamicList.removeItem(item, $index)", ng-disabled="!dynamicList.canRemoveItem()", type="button") Remove Item
-            div
-                dynamic-editor(data-schema="schema.items" ng-model="item" data-form="form")
