@@ -4,7 +4,7 @@
     angular.module('app')
         .controller('homeController', ['$scope', HomeController]);
 
-    function HomeController($scope) {
+    function HomeController() {
         var vm = this;
 
         vm.formSchema = {

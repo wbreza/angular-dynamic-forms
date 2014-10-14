@@ -17,8 +17,11 @@ var paths = {
         './vendor/angular/angular.js',
         './vendor/angular-resource/angular-resource.js',
         './vendor/angular-route/angular-route.js',
+        './vendor/angular-dynamic-forms/dist/dynamic-forms.js',
+        './vendor/angular-ui-codemirror/ui-codemirror.js',
         './vendor/bootstrap/dist/jquery.js',
-        './vendor/jquery/dist/js/bootstrap.js'
+        './vendor/jquery/dist/js/bootstrap.js',
+        './vendor/codemirror/lib/codemirror.js'
     ]
 };
 
@@ -87,8 +90,8 @@ gulp.task('uglify-vendor-scripts', ['combine-vendor-scripts'], function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(paths.appScripts, ['build']);
-    gulp.watch(paths.htmlTemplates, ['build']);
+    gulp.watch(paths.appScripts, ['build-debug']);
+    gulp.watch(paths.htmlTemplates, ['build-debug']);
 });
 
 gulp.task('clean', function (cb) {
@@ -97,5 +100,6 @@ gulp.task('clean', function (cb) {
 
 gulp.task('combine', ['combine-app-scripts', 'combine-vendor-scripts']);
 gulp.task('uglify', ['uglify-app-scripts', 'uglify-vendor-scripts']);
-gulp.task('build', ['clean', 'bower', 'combine', 'uglify']);
+gulp.task('build-debug', ['clean', 'bower', 'combine']);
+gulp.task('build', ['build-debug', 'uglify']);
 gulp.task('default', ['build', 'watch']);
