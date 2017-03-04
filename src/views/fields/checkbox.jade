@@ -1,4 +1,4 @@
 .checkbox
     label
         dynamic-input(data-schema="schema", ng-model="model") {{schema.title}}
-        p.text-danger(ng-show="field.hasError()") {{formField.$error.message}}
+        p.text-danger(ng-show="field.hasError()") {{field.errorMessage}}

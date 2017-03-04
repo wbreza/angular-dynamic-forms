@@ -6,7 +6,7 @@
 
         beforeEach(function () {
             angular
-                .module('dynamicTemplatesProviderTest', function () { })
+                .module('dynamicTemplatesProviderTest', [])
                 .config(function (dynamicTemplatesProvider) {
                     // Used for tests below
                     dynamicTemplatesProvider.registerTemplatePath('/app/custom-module/views'); // Gets appended to the end of the list
@@ -126,7 +126,7 @@
 
         beforeEach(function () {
             angular
-                .module('dynamicTemplatesProviderTest', function () { })
+                .module('dynamicTemplatesProviderTest', [])
                 .config(function (dynamicTemplatesProvider) {
                 provider = dynamicTemplatesProvider;
             });

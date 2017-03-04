@@ -1,9 +1,17 @@
-var paths = require('../paths.js');
+var karmaFiles = [
+    'bower_components/angular/angular.js',
+    'bower_components/angular-mocks/angular-mocks.js',
+    'bower_components/jquery/dist/jquery.js',
+    'src/*.js',
+    'src/**/*.js',
+    'build/templates.js',
+    'test/**/*.spec.js'
+];
 
 module.exports = function (config) {
     config.set({
         basePath: '../',
-        files: paths.karmaFiles,
+        files: karmaFiles,
         exclude: [],
         reporters: process.env.DEBUG ? ['spec'] : ['spec', 'coverage'],
         autoWatch: true,
@@ -17,7 +25,7 @@ module.exports = function (config) {
             'karma-phantomjs-launcher',
 	        'karma-coverage'
         ],
-        preprocessors: { './src/**/*.js': ['coverage'] },
+        preprocessors: { 'src/**/*.js': ['coverage'] },
         coverageReporter: {
             reporters: [
                 { type: 'html' },
@@ -27,5 +35,6 @@ module.exports = function (config) {
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
         logLevel: config.LOG_INFO,
+        singleRun: true
     });
 };

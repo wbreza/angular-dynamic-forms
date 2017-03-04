@@ -38,38 +38,38 @@
         });
 
         it('monitorField sets the error message when a validation fails', inject(function($rootScope) {
-            var fieldSchema = { name: 'foo', dataType: 'text', validations: { required: true, minLength: 4, maxLength: 16 } },
-                scope = $rootScope.$new(),
-                formField = { $error: { required: true, message: null }, $invalid: true };
+            var fieldSchema = { name: 'foo', dataType: 'text', validations: { required: true, minLength: 4, maxLength: 16 } };
+            var formField = { $error: { required: true }, $invalid: true };
 
+            var scope = $rootScope.$new();
             scope.schema = fieldSchema;
 
-            expect(formField.$error.message).toBeNull();
+            expect(scope.errorMessage).toBeUndefined();
             validationService.monitorField(scope, fieldSchema, formField);
             scope.$digest();
 
-            expect(formField.$error.message).not.toBeNull();
-            expect(formField.$error.message.length).toBeGreaterThan(0);
+            expect(scope.errorMessage).not.toBeNull();
+            expect(scope.errorMessage.length).toBeGreaterThan(0);
         }));
 
         it('monitorField removes the error message when there are no validation errors', inject(function($rootScope) {
-            var fieldSchema = { name: 'foo', dataType: 'text', validations: { required: true, minLength: 4, maxLength: 16 } },
-                scope = $rootScope.$new(),
-                formField = { $error: { required: true, message: 'Something bad happened' }, $invalid: true };
+            var fieldSchema = { name: 'foo', dataType: 'text', validations: { required: true, minLength: 4, maxLength: 16 } };
+            var formField = { $error: { required: true }, $invalid: true };
 
+            var scope = $rootScope.$new();
             scope.schema = fieldSchema;
-            scope.$digest();
 
             validationService.monitorField(scope, fieldSchema, formField);
+            scope.$digest();
 
-            expect(formField.$error.message).not.toBeNull();
-            expect(formField.$error.message.length).toBeGreaterThan(0);
+            expect(scope.errorMessage).not.toBeNull();
+            expect(scope.errorMessage.length).toBeGreaterThan(0);
 
             formField.$invalid = false;
             formField.$error.required = false;
             scope.$digest();
 
-            expect(formField.$error.message).toBeNull();
+            expect(scope.errorMessage).toBeNull();
         }));
 
         describe('Default Validators', function() {
@@ -244,7 +244,7 @@
 
         beforeEach(function() {
             angular
-                .module('validationProviderTest', function() {})
+                .module('validationProviderTest', [])
                 .config(function(validationProvider) {
                     provider = validationProvider;
                 });

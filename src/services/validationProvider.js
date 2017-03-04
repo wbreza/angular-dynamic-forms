@@ -66,15 +66,17 @@
          * @param {formField} The form field within the angular formController that is linked to the fieldSchema
          */
         function monitorField(scope, fieldSchema, formField) {
+            scope.errorMessage = null;
+
             scope.$watch(function () {
                 if (!formField.$invalid) {
-                    formField.$error.message = null;
+                    scope.errorMessage = null;
                     return;
                 }
 
                 for (var key in formField.$error) {
                     if (formField.$error[key] === true) {
-                        formField.$error.message = getErrorMessage(fieldSchema, key);
+                        scope.errorMessage = getErrorMessage(fieldSchema, key);
                         break;
                     }
                 }

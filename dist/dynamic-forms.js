@@ -1,15 +1,7 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('dynamic-forms', ['ngResource', 'ngRoute']);
-
-    module.config(['$routeProvider', function ($routeProvider) {
-        $routeProvider
-            .when('/dynamic-forms', {
-                controller: 'demoController',
-                templateUrl: '/app/dynamic-forms/views/demo.html'
-            });
-    }]);
+    angular.module('dynamic-forms', []);
 }(angular));
 
 (function () {
@@ -126,7 +118,7 @@
 
         vm.hasError = function() {
             var field = $scope.formField;
-            return field.$error.message && field.$dirty;
+            return field.errorMessage && field.$dirty;
         };
 
         vm.hasSuccess = function() {
@@ -692,15 +684,17 @@
          * @param {formField} The form field within the angular formController that is linked to the fieldSchema
          */
         function monitorField(scope, fieldSchema, formField) {
+            scope.errorMessage = null;
+
             scope.$watch(function () {
                 if (!formField.$invalid) {
-                    formField.$error.message = null;
+                    scope.errorMessage = null;
                     return;
                 }
 
                 for (var key in formField.$error) {
                     if (formField.$error[key] === true) {
-                        formField.$error.message = getErrorMessage(fieldSchema, key);
+                        scope.errorMessage = getErrorMessage(fieldSchema, key);
                         break;
                     }
                 }
@@ -881,8 +875,8 @@ $templateCache.put("/app/dynamic-forms/views/editors/richText.html","\n<textarea
 $templateCache.put("/app/dynamic-forms/views/editors/section.html","\n<div ng-class=\"{\'panel-danger\':editor.hasError(), \'panel-success\':editor.isValid()}\" ng-form=\"ng-form\" class=\"panel panel-default\">\n  <div class=\"panel-heading\">{{schema.title}}</div>\n  <div class=\"panel-body\">\n    <p>{{schema.description}}</p>\n    <dynamic-editor data-schema=\"schema\" ng-model=\"model\"></dynamic-editor>\n  </div>\n</div>");
 $templateCache.put("/app/dynamic-forms/views/editors/string.html","\n<input type=\"text\" data-ng-model=\"model\" class=\"form-control\"/>");
 $templateCache.put("/app/dynamic-forms/views/editors/uri.html","\n<input type=\"url\" data-ng-model=\"model\" class=\"form-control\"/>");
-$templateCache.put("/app/dynamic-forms/views/fields/checkbox.html","\n<div class=\"checkbox\">\n  <label>\n    <dynamic-input data-schema=\"schema\" ng-model=\"model\">{{schema.title}}</dynamic-input>\n    <p ng-show=\"field.hasError()\" class=\"text-danger\">{{formField.$error.message}}</p>\n  </label>\n</div>");
-$templateCache.put("/app/dynamic-forms/views/fields/default.html","\n<div ng-class=\"{\'has-error\': field.hasError(), \'has-success\': field.hasSuccess()}\" class=\"form-group has-feedback\">\n  <label class=\"control-label\">{{schema.title}} </label><span ng-show=\"schema.required\" class=\"required\">* </span><span ng-show=\"schema.description\" title=\"{{schema.description}}\" class=\"glyphicon glyphicon-info-sign\"></span>\n  <dynamic-input data-schema=\"schema\" ng-model=\"model\"></dynamic-input><span ng-class=\"{\'glyphicon-ok\': field.showSuccess(), \'glyphicon-remove\': field.showError()}\" class=\"glyphicon form-control-feedback\"></span>\n  <p data-ng-show=\"field.hasError()\" class=\"text-danger\">{{formField.$error.message}}</p>\n</div>");
-$templateCache.put("/app/dynamic-forms/views/fields/horizontal.html","\n<div class=\"form-group\">\n  <label class=\"control-label col-sm-2\">{{schema.title}}</label><span ng-show=\"schema.required\" class=\"required\">*</span><span ng-show=\"schema.description\" title=\"{{schema.description}}\" class=\"glyphicon glyphicon-info-sign\"></span>\n  <div class=\"col-sm-10\">\n    <dynamic-input data-schema=\"schema\" ng-model=\"model\"></dynamic-input><span ng-class=\"{\'glyphicon-ok\': field.showSuccess(), \'glyphicon-remove\': field.showError()}\" class=\"glyphicon form-control-feedback\"></span>\n    <p ng-show=\"field.hasError()\" class=\"text-danger\">{{formField.$error.message}}</p>\n  </div>\n</div>");
+$templateCache.put("/app/dynamic-forms/views/fields/checkbox.html","\n<div class=\"checkbox\">\n  <label>\n    <dynamic-input data-schema=\"schema\" ng-model=\"model\">{{schema.title}}</dynamic-input>\n    <p ng-show=\"field.hasError()\" class=\"text-danger\">{{field.errorMessage}}</p>\n  </label>\n</div>");
+$templateCache.put("/app/dynamic-forms/views/fields/default.html","\n<div ng-class=\"{\'has-error\': field.hasError(), \'has-success\': field.hasSuccess()}\" class=\"form-group has-feedback\">\n  <label class=\"control-label\">{{schema.title}} </label><span ng-show=\"schema.required\" class=\"required\">* </span><span ng-show=\"schema.description\" title=\"{{schema.description}}\" class=\"glyphicon glyphicon-info-sign\"></span>\n  <dynamic-input data-schema=\"schema\" ng-model=\"model\"></dynamic-input><span ng-class=\"{\'glyphicon-ok\': field.showSuccess(), \'glyphicon-remove\': field.showError()}\" class=\"glyphicon form-control-feedback\"></span>\n  <p data-ng-show=\"field.hasError()\" class=\"text-danger\">{{field.errorMessage}}</p>\n</div>");
+$templateCache.put("/app/dynamic-forms/views/fields/horizontal.html","\n<div class=\"form-group\">\n  <label class=\"control-label col-sm-2\">{{schema.title}}</label><span ng-show=\"schema.required\" class=\"required\">*</span><span ng-show=\"schema.description\" title=\"{{schema.description}}\" class=\"glyphicon glyphicon-info-sign\"></span>\n  <div class=\"col-sm-10\">\n    <dynamic-input data-schema=\"schema\" ng-model=\"model\"></dynamic-input><span ng-class=\"{\'glyphicon-ok\': field.showSuccess(), \'glyphicon-remove\': field.showError()}\" class=\"glyphicon form-control-feedback\"></span>\n    <p ng-show=\"field.hasError()\" class=\"text-danger\">{{field.errorMessage}}</p>\n  </div>\n</div>");
 $templateCache.put("/app/dynamic-forms/views/forms/default.html","\n<article>   \n  <form role=\"form\" ng-submit=\"dynamicForm.onSubmit()\" novalidate=\"novalidate\">\n    <dynamic-editor data-schema=\"schema\" ng-model=\"model\"></dynamic-editor>\n    <section data-ng-transclude=\"data-ng-transclude\"></section>\n  </form>\n</article>");
 $templateCache.put("/app/dynamic-forms/views/forms/horizontal.html","\n<article>\n  <h1>{{schema.title}}</h1>\n  <h4>{{schema.description}}</h4>\n  <hr/>\n  <form role=\"form\" ng-submit=\"form.onSubmit(dynamicForm)\" novalidate=\"novalidate\" class=\"form-horizontal\">\n    <dynamic-editor data-schema=\"schema\" ng-model=\"model\"></dynamic-editor>\n    <div class=\"form-group\">\n      <div class=\"col-sm-2\"></div>\n      <div class=\"col-sm-10\">\n        <section ng-transclude=\"ng-transclude\"></section>\n      </div>\n    </div>\n  </form>\n</article>");}]);
