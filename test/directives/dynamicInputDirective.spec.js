@@ -75,12 +75,12 @@
         var input = createDynamicInput(scope, 'INPUT'),
             inputScope = angular.element(input).scope();
 
-        expect(inputScope.formField.$error.message).toBeDefined();
-        expect(inputScope.formField.$error.message).toBeNull();
+        expect(inputScope.errorMessage).toBeDefined();
+        expect(inputScope.errorMessage).toBeNull();
 
         scope.model = '';
         scope.$digest();
 
-        expect(inputScope.formField.$error.message.length).toBeGreaterThan(0);
+        expect(inputScope.errorMessage.length).toBeGreaterThan(0);
     });
 });

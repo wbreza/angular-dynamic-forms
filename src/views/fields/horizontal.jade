@@ -5,4 +5,4 @@
     .col-sm-10
         dynamic-input(data-schema="schema", ng-model="model")
         span.glyphicon.form-control-feedback(ng-class="{'glyphicon-ok': field.showSuccess(), 'glyphicon-remove': field.showError()}")
-        p.text-danger(ng-show="field.hasError()") {{formField.$error.message}}
+        p.text-danger(ng-show="field.hasError()") {{field.errorMessage}}

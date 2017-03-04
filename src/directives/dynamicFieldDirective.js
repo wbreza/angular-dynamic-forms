@@ -16,7 +16,7 @@
 
         vm.hasError = function() {
             var field = $scope.formField;
-            return field.$error.message && field.$dirty;
+            return field.errorMessage && field.$dirty;
         };
 
         vm.hasSuccess = function() {

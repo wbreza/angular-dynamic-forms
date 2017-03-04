@@ -3,18 +3,17 @@
     specs: './test/**/*.spec.js',
     jadeTemplates: './src/**/*.jade',
     vendorScripts: [
-        './bower_components/angular/angular.js',
-        './bower_components/angular-resource/angular-resource.js',
-        './bower_components/angular-route/angular-route.js',
-        './bower_components/angular-mocks/angular-mocks.js',
-        './bower_components/jquery/dist/jquery.js'
+        'bower_components/angular/angular.js',
+        'bower_components/angular-mocks/angular-mocks.js',
+        'bower_components/jquery/dist/jquery.js'
     ]
 };
 
 paths.karmaFiles = paths.vendorScripts
-    .concat(paths.scripts)
-    .concat('./build/templates.js')
-    .concat(paths.specs);
+    .concat('src/*.js')
+    .concat('src/**/*.js')
+    .concat('build/templates.js')
+    .concat('test/**/*.spec.js');
 
 paths.buildFiles = paths.scripts.concat('./build/templates.js');
 
