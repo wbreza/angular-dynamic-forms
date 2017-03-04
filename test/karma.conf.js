@@ -19,7 +19,6 @@ module.exports = function (config) {
         browsers: [process.env.DEBUG ? 'Chrome' : 'PhantomJS'],
         plugins: [
             'karma-chrome-launcher',
-            'karma-firefox-launcher',
             'karma-jasmine',
             'karma-spec-reporter',
             'karma-phantomjs-launcher',
