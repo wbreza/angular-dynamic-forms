@@ -70,12 +70,14 @@
 
             scope.$watch(function () {
                 if (!formField.$invalid) {
+                    scope.errorKey = null;
                     scope.errorMessage = null;
                     return;
                 }
 
                 for (var key in formField.$error) {
                     if (formField.$error[key] === true) {
+                        scope.errorKey = key;
                         scope.errorMessage = getErrorMessage(fieldSchema, key);
                         break;
                     }
