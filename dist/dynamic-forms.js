@@ -7,405 +7,6 @@
 (function () {
     'use strict';
 
-    function DynamicEditorDirective($compile, dynamicTemplates, jsonSchema, validation) {
-        return {
-            restrict: 'E',
-            replace: true,
-            require: '?^dynamicForm',
-            scope: {
-                schema: '=',
-                model: '=ngModel'
-            },
-            controller: 'dynamicEditorController',
-            controllerAs: 'editor',
-            link: function (scope, element, attrs, dynamicFormCtrl) {
-                if (dynamicFormCtrl) {
-                    // Inspects the schema for embedded references and expands as needed
-                    dynamicFormCtrl.setupSchema(scope.schema);
-                }
-
-                var isComplex = jsonSchema.isComplex(scope.schema),
-                    editorTemplate = dynamicTemplates.getEditorTemplate(scope.schema),
-                    editorElement = angular.element(editorTemplate);
-
-                if (isComplex) {
-                    // Required to prevent recursive stackoverflow
-                    scope.schema.format = null;
-
-                    // Define an empty model when the model has not been defined
-                    if (scope.schema.type === 'object' && !scope.model) {
-                        scope.model = {};
-                    }
-                }
-
-                element.replaceWith(editorElement);
-                validation.applyRules(editorElement, scope.schema);
-                $compile(editorElement)(scope);
-
-                // Find the first form within the template and set it as part of the scope.
-                scope.form = editorElement.controller('form');
-                if (!scope.form && editorElement[0].querySelector) {
-                    scope.form = angular.element(editorElement[0].querySelector('.ng-form')).controller('form');
-                }
-            }
-        };
-    }
-
-    function DynamicEditorController($scope) {
-        var vm = this,
-            propertyArray = [];
-
-        /**
-         * Get and transforms the JSON schema properties from object map to an array
-         * Also merges in the key of the object as the "name" within the property
-         * Bound from the form HTML view
-         *
-         * @returns And array of JSON schema properties
-         */
-        vm.getProperties = function () {
-            if (propertyArray.length > 0) {
-                return propertyArray;
-            }
-
-            for (var key in $scope.schema.properties) {
-                var property = angular.extend({}, $scope.schema.properties[key], { name: key });
-                propertyArray.push(property);
-            }
-
-            return propertyArray;
-        };
-
-        /**
-         * Determines if the form is in a valid state
-         *
-         * @returns true if valid, otherwise false
-         */
-        vm.isValid = function () {
-            return $scope.form.$valid;
-        };
-
-        /**
-         * Determines if the form has errors that should be displayed
-         * If the field starts in an invalid state, waits for it to become dirty
-         *
-         * @returns true if has errors, otherwise false.
-         */
-        vm.hasError = function () {
-            return $scope.form.$invalid && $scope.form.$dirty;
-        };
-    }
-
-    angular.module('dynamic-forms')
-        .directive('dynamicEditor', ['$compile', 'dynamicTemplates', 'jsonSchema', 'validation', DynamicEditorDirective])
-        .controller('dynamicEditorController', ['$scope', DynamicEditorController]);
-}());
-
-(function () {
-    'use strict';
-
-    function DynamicFieldController($scope) {
-        var vm = this;
-
-        vm.showError = function () {
-            var field = $scope.formField;
-            return !!(field && field.$invalid && field.$dirty);
-        };
-
-        vm.showSuccess = function () {
-            var field = $scope.formField;
-            return !!(field && field.$valid && field.$dirty);
-        };
-
-        vm.hasError = function() {
-            var field = $scope.formField;
-            return !!($scope.errorMessage && field.$dirty);
-        };
-
-        vm.hasSuccess = function() {
-            var field = $scope.formField;
-            return !!(field.$valid && ($scope.model || field.$dirty));
-        };
-    }
-
-    function DynamicFieldDirective($compile, validation, dynamicTemplates) {
-
-        return {
-            restrict: 'E',
-            replace: true,
-            require: '?^dynamicForm',
-            controller: 'dynamicFieldController',
-            controllerAs: 'field',
-            link: function (scope, element, attrs, dynamicForm) {
-                var template = dynamicForm ? dynamicForm.getFieldTemplate(scope.schema.fieldType) : dynamicTemplates.getFieldTemplate(scope.schema),
-                    fieldElement = angular.element(template);
-
-                element.replaceWith(fieldElement);
-                $compile(fieldElement)(scope);
-            }
-        };
-    }
-
-    angular.module('dynamic-forms')
-        .controller('dynamicFieldController', ['$scope', DynamicFieldController])
-        .directive('dynamicField', ['$compile', 'validation', 'dynamicTemplates', DynamicFieldDirective]);
-
-}());
-
-(function () {
-    'use strict';
-
-    function DynamicFormDirective(dynamicTemplates, $compile) {
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            scope: {
-                schema: '=',
-                model: '=ngModel',
-                submit: '&'
-            },
-            controller: 'dynamicFormController',
-            controllerAs: 'dynamicForm',
-            link: function (scope, element, attrs, ctrl, transclude) {
-                var template = dynamicTemplates.getFormTemplate(scope.schema),
-                    formElement = angular.element(template);
-
-                element.append(formElement);
-                $compile(formElement, transclude)(scope);
-
-                // Find the first form within the template and set it as part of the scope.
-                scope.form = formElement.controller('form');
-                if (!scope.form) {
-                    scope.form = formElement.find('form').controller('form');
-                }
-            }
-        };
-    }
-
-    function DynamicFormController($scope, dynamicTemplates, jsonSchema) {
-        var vm = this;
-
-        vm.onSubmit = function () {
-            $scope.submit({ '$form': $scope.form, '$model': $scope.model });
-        };
-
-        vm.getFieldTemplate = function (fieldType) {
-            return dynamicTemplates.getFieldTemplate(fieldType || $scope.schema.format || 'default');
-        };
-
-        vm.setupSchema = function (editorSchema) {
-            if (angular.isDefined(editorSchema.$ref)) {
-                jsonSchema.extend(editorSchema, $scope.schema);
-            }
-        };
-    }
-
-    angular.module('dynamic-forms')
-        .directive('dynamicForm', ['dynamicTemplates', '$compile', DynamicFormDirective])
-        .controller('dynamicFormController', ['$scope', 'dynamicTemplates', 'jsonSchema', DynamicFormController]);
-}());
-
-(function () {
-    'use strict';
-
-    function DynamicInputDirective(dynamicTemplates, $compile, $interpolate, validation) {
-        return {
-            restrict: 'E',
-            replace: true,
-            require: '?^form',
-            link: function (scope, element, attrs, formCtrl) {
-                // Get the template
-                var elementId = scope.schema.name + '-' + scope.$id,
-                    template = dynamicTemplates.getTemplate('editors', scope.schema.format, scope.schema.type, 'string');
-
-                template = $interpolate(template)(scope);
-
-                var inputElement = angular.element(template);
-
-                inputElement.attr({
-                    id: elementId,
-                    name: elementId
-                });
-
-                validation.applyRules(inputElement, scope.schema);
-                element.replaceWith(inputElement);
-                $compile(inputElement)(scope);
-
-                if (formCtrl) {
-                    scope.form = formCtrl;
-                    scope.formField = formCtrl[elementId];
-                    if (scope.formField) {
-                        validation.monitorField(scope, scope.schema, scope.formField);
-                    }
-                }
-            }
-        };
-    }
-
-    angular.module('dynamic-forms')
-        .directive('dynamicInput', ['dynamicTemplates', '$compile', '$interpolate', 'validation', DynamicInputDirective]);
-}());
-
-(function (undefined) {
-    'use strict';
-
-    function DynamicListDirective(validation) {
-        return {
-            restrict: 'E',
-            replace: true,
-            require: ['?^form', 'ngModel'],
-            transclude: true,
-            template: '<section ng-transclude></section>',
-            controller: 'dynamicListController',
-            controllerAs: 'dynamicList',
-            link: function (scope, element, attrs, ctrls) {
-                var formCtrl = ctrls[0],
-                    ngModelCtrl = ctrls[1];
-
-                if (formCtrl) {
-                    scope.form = formCtrl;
-                    ngModelCtrl.$name = scope.schema.name + '-' + scope.$id;
-                    formCtrl.$addControl(ngModelCtrl);
-                    scope.formField = formCtrl[ngModelCtrl.$name];
-
-                    if (scope.formField) {
-                        validation.monitorField(scope, scope.schema, scope.formField);
-                    }
-                }
-
-                scope.$on('$destroy', function () {
-                    formCtrl.$removeControl(ngModelCtrl);
-                });
-            }
-        };
-    }
-
-    function DynamicListController($scope) {
-        var vm = this;
-
-        function activate() {
-            if ($scope.model === undefined) {
-                $scope.model = [];
-            }
-
-            if (angular.isDefined($scope.schema.minItems) && $scope.model.length < $scope.schema.minItems) {
-                for (var i = $scope.model.length; i < $scope.schema.minItems; i++) {
-                    vm.addItem();
-                }
-            }
-        }
-
-        vm.addItem = function () {
-            $scope.model.push({});
-        };
-
-        vm.removeItem = function (item, index) {
-            return $scope.model.splice(index, 1);
-        };
-
-        vm.canAddItem = function() {
-            return angular.isDefined($scope.schema.maxItems) ? ($scope.model.length < $scope.schema.maxItems) : true;
-        };
-
-        vm.canRemoveItem = function() {
-            return angular.isDefined($scope.schema.minItems) ? ($scope.model.length > $scope.schema.minItems) : true;
-        };
-
-        activate();
-    }
-
-    angular.module('dynamic-forms')
-        .directive('dynamicList', ['validation', DynamicListDirective])
-        .controller('dynamicListController', ['$scope', DynamicListController]);
-}());
-
-(function () {
-    'use strict';
-
-    function MaxItemsDirective() {
-        return {
-            restrict: 'A',
-            require: '?ngModel',
-            link: function (scope, element, attrs, ngModel) {
-                if (!ngModel) {
-                    return;
-                }
-
-                var maxItems = parseInt(attrs.maxItems, 10);
-                if (isNaN(maxItems)) {
-                    return;
-                }
-
-                var validator = function (model) {
-                    var isValid = !!(model && model.length <= maxItems);
-                    ngModel.$setValidity('maxitems', isValid);
-
-                    return model;
-                };
-
-                scope.$watchCollection(attrs.ngModel, function (newValue) {
-                    if (!angular.isDefined(newValue)) {
-                        return;
-                    }
-
-                    validator(ngModel.$modelValue);
-                });
-
-                ngModel.$formatters.push(validator);
-                ngModel.$parsers.unshift(validator);
-            }
-        };
-    }
-
-    angular.module('dynamic-forms')
-        .directive('maxItems', [MaxItemsDirective]);
-}());
-
-(function () {
-    'use strict';
-
-    function MinItemsDirective() {
-        return {
-            restrict: 'A',
-            require: '?ngModel',
-            link: function (scope, element, attrs, ngModel) {
-                if (!ngModel) {
-                    return;
-                }
-
-                var minItems = parseInt(attrs.minItems, 10);
-                if (isNaN(minItems)) {
-                    return;
-                }
-
-                var validator = function (model) {
-                    var isValid = !!(model && model.length >= minItems);
-                    ngModel.$setValidity('minitems', isValid);
-
-                    return model;
-                };
-
-                scope.$watchCollection(attrs.ngModel, function (newValue) {
-                    if (!angular.isDefined(newValue)) {
-                        return;
-                    }
-
-                    validator(ngModel.$modelValue);
-                });
-
-                ngModel.$formatters.push(validator);
-                ngModel.$parsers.unshift(validator);
-            }
-        };
-    }
-
-    angular.module('dynamic-forms')
-        .directive('minItems', [MinItemsDirective]);
-}());
-
-(function () {
-    'use strict';
-
     var templatePaths = [];
 
     /**
@@ -860,6 +461,405 @@
 
     angular.module('dynamic-forms')
         .provider('validation', ValidationProvider);
+}());
+
+(function () {
+    'use strict';
+
+    function DynamicEditorDirective($compile, dynamicTemplates, jsonSchema, validation) {
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '?^dynamicForm',
+            scope: {
+                schema: '=',
+                model: '=ngModel'
+            },
+            controller: 'dynamicEditorController',
+            controllerAs: 'editor',
+            link: function (scope, element, attrs, dynamicFormCtrl) {
+                if (dynamicFormCtrl) {
+                    // Inspects the schema for embedded references and expands as needed
+                    dynamicFormCtrl.setupSchema(scope.schema);
+                }
+
+                var isComplex = jsonSchema.isComplex(scope.schema),
+                    editorTemplate = dynamicTemplates.getEditorTemplate(scope.schema),
+                    editorElement = angular.element(editorTemplate);
+
+                if (isComplex) {
+                    // Required to prevent recursive stackoverflow
+                    scope.schema.format = null;
+
+                    // Define an empty model when the model has not been defined
+                    if (scope.schema.type === 'object' && !scope.model) {
+                        scope.model = {};
+                    }
+                }
+
+                element.replaceWith(editorElement);
+                validation.applyRules(editorElement, scope.schema);
+                $compile(editorElement)(scope);
+
+                // Find the first form within the template and set it as part of the scope.
+                scope.form = editorElement.controller('form');
+                if (!scope.form && editorElement[0].querySelector) {
+                    scope.form = angular.element(editorElement[0].querySelector('.ng-form')).controller('form');
+                }
+            }
+        };
+    }
+
+    function DynamicEditorController($scope) {
+        var vm = this,
+            propertyArray = [];
+
+        /**
+         * Get and transforms the JSON schema properties from object map to an array
+         * Also merges in the key of the object as the "name" within the property
+         * Bound from the form HTML view
+         *
+         * @returns And array of JSON schema properties
+         */
+        vm.getProperties = function () {
+            if (propertyArray.length > 0) {
+                return propertyArray;
+            }
+
+            for (var key in $scope.schema.properties) {
+                var property = angular.extend({}, $scope.schema.properties[key], { name: key });
+                propertyArray.push(property);
+            }
+
+            return propertyArray;
+        };
+
+        /**
+         * Determines if the form is in a valid state
+         *
+         * @returns true if valid, otherwise false
+         */
+        vm.isValid = function () {
+            return $scope.form.$valid;
+        };
+
+        /**
+         * Determines if the form has errors that should be displayed
+         * If the field starts in an invalid state, waits for it to become dirty
+         *
+         * @returns true if has errors, otherwise false.
+         */
+        vm.hasError = function () {
+            return $scope.form.$invalid && $scope.form.$dirty;
+        };
+    }
+
+    angular.module('dynamic-forms')
+        .directive('dynamicEditor', ['$compile', 'dynamicTemplates', 'jsonSchema', 'validation', DynamicEditorDirective])
+        .controller('dynamicEditorController', ['$scope', DynamicEditorController]);
+}());
+
+(function () {
+    'use strict';
+
+    function DynamicFieldController($scope) {
+        var vm = this;
+
+        vm.showError = function () {
+            var field = $scope.formField;
+            return !!(field && field.$invalid && field.$dirty);
+        };
+
+        vm.showSuccess = function () {
+            var field = $scope.formField;
+            return !!(field && field.$valid && field.$dirty);
+        };
+
+        vm.hasError = function() {
+            var field = $scope.formField;
+            return !!($scope.errorMessage && field.$dirty);
+        };
+
+        vm.hasSuccess = function() {
+            var field = $scope.formField;
+            return !!(field.$valid && ($scope.model || field.$dirty));
+        };
+    }
+
+    function DynamicFieldDirective($compile, validation, dynamicTemplates) {
+
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '?^dynamicForm',
+            controller: 'dynamicFieldController',
+            controllerAs: 'field',
+            link: function (scope, element, attrs, dynamicForm) {
+                var template = dynamicForm ? dynamicForm.getFieldTemplate(scope.schema.fieldType) : dynamicTemplates.getFieldTemplate(scope.schema),
+                    fieldElement = angular.element(template);
+
+                element.replaceWith(fieldElement);
+                $compile(fieldElement)(scope);
+            }
+        };
+    }
+
+    angular.module('dynamic-forms')
+        .controller('dynamicFieldController', ['$scope', DynamicFieldController])
+        .directive('dynamicField', ['$compile', 'validation', 'dynamicTemplates', DynamicFieldDirective]);
+
+}());
+
+(function () {
+    'use strict';
+
+    function DynamicFormDirective(dynamicTemplates, $compile) {
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            scope: {
+                schema: '=',
+                model: '=ngModel',
+                submit: '&'
+            },
+            controller: 'dynamicFormController',
+            controllerAs: 'dynamicForm',
+            link: function (scope, element, attrs, ctrl, transclude) {
+                var template = dynamicTemplates.getFormTemplate(scope.schema),
+                    formElement = angular.element(template);
+
+                element.append(formElement);
+                $compile(formElement, transclude)(scope);
+
+                // Find the first form within the template and set it as part of the scope.
+                scope.form = formElement.controller('form');
+                if (!scope.form) {
+                    scope.form = formElement.find('form').controller('form');
+                }
+            }
+        };
+    }
+
+    function DynamicFormController($scope, dynamicTemplates, jsonSchema) {
+        var vm = this;
+
+        vm.onSubmit = function () {
+            $scope.submit({ '$form': $scope.form, '$model': $scope.model });
+        };
+
+        vm.getFieldTemplate = function (fieldType) {
+            return dynamicTemplates.getFieldTemplate(fieldType || $scope.schema.format || 'default');
+        };
+
+        vm.setupSchema = function (editorSchema) {
+            if (angular.isDefined(editorSchema.$ref)) {
+                jsonSchema.extend(editorSchema, $scope.schema);
+            }
+        };
+    }
+
+    angular.module('dynamic-forms')
+        .directive('dynamicForm', ['dynamicTemplates', '$compile', DynamicFormDirective])
+        .controller('dynamicFormController', ['$scope', 'dynamicTemplates', 'jsonSchema', DynamicFormController]);
+}());
+
+(function () {
+    'use strict';
+
+    function DynamicInputDirective(dynamicTemplates, $compile, $interpolate, validation) {
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '?^form',
+            link: function (scope, element, attrs, formCtrl) {
+                // Get the template
+                var elementId = scope.schema.name + '-' + scope.$id,
+                    template = dynamicTemplates.getTemplate('editors', scope.schema.format, scope.schema.type, 'string');
+
+                template = $interpolate(template)(scope);
+
+                var inputElement = angular.element(template);
+
+                inputElement.attr({
+                    id: elementId,
+                    name: elementId
+                });
+
+                validation.applyRules(inputElement, scope.schema);
+                element.replaceWith(inputElement);
+                $compile(inputElement)(scope);
+
+                if (formCtrl) {
+                    scope.form = formCtrl;
+                    scope.formField = formCtrl[elementId];
+                    if (scope.formField) {
+                        validation.monitorField(scope, scope.schema, scope.formField);
+                    }
+                }
+            }
+        };
+    }
+
+    angular.module('dynamic-forms')
+        .directive('dynamicInput', ['dynamicTemplates', '$compile', '$interpolate', 'validation', DynamicInputDirective]);
+}());
+
+(function (undefined) {
+    'use strict';
+
+    function DynamicListDirective(validation) {
+        return {
+            restrict: 'E',
+            replace: true,
+            require: ['?^form', 'ngModel'],
+            transclude: true,
+            template: '<section ng-transclude></section>',
+            controller: 'dynamicListController',
+            controllerAs: 'dynamicList',
+            link: function (scope, element, attrs, ctrls) {
+                var formCtrl = ctrls[0],
+                    ngModelCtrl = ctrls[1];
+
+                if (formCtrl) {
+                    scope.form = formCtrl;
+                    ngModelCtrl.$name = scope.schema.name + '-' + scope.$id;
+                    formCtrl.$addControl(ngModelCtrl);
+                    scope.formField = formCtrl[ngModelCtrl.$name];
+
+                    if (scope.formField) {
+                        validation.monitorField(scope, scope.schema, scope.formField);
+                    }
+                }
+
+                scope.$on('$destroy', function () {
+                    formCtrl.$removeControl(ngModelCtrl);
+                });
+            }
+        };
+    }
+
+    function DynamicListController($scope) {
+        var vm = this;
+
+        function activate() {
+            if ($scope.model === undefined) {
+                $scope.model = [];
+            }
+
+            if (angular.isDefined($scope.schema.minItems) && $scope.model.length < $scope.schema.minItems) {
+                for (var i = $scope.model.length; i < $scope.schema.minItems; i++) {
+                    vm.addItem();
+                }
+            }
+        }
+
+        vm.addItem = function () {
+            $scope.model.push({});
+        };
+
+        vm.removeItem = function (item, index) {
+            return $scope.model.splice(index, 1);
+        };
+
+        vm.canAddItem = function() {
+            return angular.isDefined($scope.schema.maxItems) ? ($scope.model.length < $scope.schema.maxItems) : true;
+        };
+
+        vm.canRemoveItem = function() {
+            return angular.isDefined($scope.schema.minItems) ? ($scope.model.length > $scope.schema.minItems) : true;
+        };
+
+        activate();
+    }
+
+    angular.module('dynamic-forms')
+        .directive('dynamicList', ['validation', DynamicListDirective])
+        .controller('dynamicListController', ['$scope', DynamicListController]);
+}());
+
+(function () {
+    'use strict';
+
+    function MaxItemsDirective() {
+        return {
+            restrict: 'A',
+            require: '?ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                if (!ngModel) {
+                    return;
+                }
+
+                var maxItems = parseInt(attrs.maxItems, 10);
+                if (isNaN(maxItems)) {
+                    return;
+                }
+
+                var validator = function (model) {
+                    var isValid = !!(model && model.length <= maxItems);
+                    ngModel.$setValidity('maxitems', isValid);
+
+                    return model;
+                };
+
+                scope.$watchCollection(attrs.ngModel, function (newValue) {
+                    if (!angular.isDefined(newValue)) {
+                        return;
+                    }
+
+                    validator(ngModel.$modelValue);
+                });
+
+                ngModel.$formatters.push(validator);
+                ngModel.$parsers.unshift(validator);
+            }
+        };
+    }
+
+    angular.module('dynamic-forms')
+        .directive('maxItems', [MaxItemsDirective]);
+}());
+
+(function () {
+    'use strict';
+
+    function MinItemsDirective() {
+        return {
+            restrict: 'A',
+            require: '?ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                if (!ngModel) {
+                    return;
+                }
+
+                var minItems = parseInt(attrs.minItems, 10);
+                if (isNaN(minItems)) {
+                    return;
+                }
+
+                var validator = function (model) {
+                    var isValid = !!(model && model.length >= minItems);
+                    ngModel.$setValidity('minitems', isValid);
+
+                    return model;
+                };
+
+                scope.$watchCollection(attrs.ngModel, function (newValue) {
+                    if (!angular.isDefined(newValue)) {
+                        return;
+                    }
+
+                    validator(ngModel.$modelValue);
+                });
+
+                ngModel.$formatters.push(validator);
+                ngModel.$parsers.unshift(validator);
+            }
+        };
+    }
+
+    angular.module('dynamic-forms')
+        .directive('minItems', [MinItemsDirective]);
 }());
 
 angular.module("dynamic-forms").run(["$templateCache", function($templateCache) {$templateCache.put("/app/dynamic-forms/views/editors/array.html","\n<dynamic-list data-schema=\"schema\" ng-model=\"model\">\n  <p data-ng-show=\"formField.$error.message\" class=\"text-danger\">{{formField.$error.message}}</p>\n  <button ng-click=\"dynamicList.addItem()\" ng-disabled=\"!dynamicList.canAddItem()\" type=\"button\" class=\"btn btn-default btn-xs\">Add Item</button>\n  <ul class=\"list-group\">\n    <li ng-repeat=\"item in model\" class=\"list-group-item\">\n      <button ng-click=\"dynamicList.removeItem(item, $index)\" ng-disabled=\"!dynamicList.canRemoveItem()\" type=\"button\" class=\"btn btn-default btn-xs\">Remove Item</button>\n      <div>\n        <dynamic-editor data-schema=\"schema.items\" ng-model=\"item\" data-form=\"form\"></dynamic-editor>\n      </div>\n    </li>\n  </ul>\n</dynamic-list>");
