@@ -6,22 +6,22 @@
 
         vm.showError = function () {
             var field = $scope.formField;
-            return field && field.$invalid && field.$dirty;
+            return !!(field && field.$invalid && field.$dirty);
         };
 
         vm.showSuccess = function () {
             var field = $scope.formField;
-            return field && field.$valid && field.$dirty;
+            return !!(field && field.$valid && field.$dirty);
         };
 
         vm.hasError = function() {
             var field = $scope.formField;
-            return field.errorMessage && field.$dirty;
+            return !!($scope.errorMessage && field.$dirty);
         };
 
         vm.hasSuccess = function() {
             var field = $scope.formField;
-            return field.$valid && ($scope.model || field.$dirty);
+            return !!(field.$valid && ($scope.model || field.$dirty));
         };
     }
 
